@@ -1,7 +1,9 @@
 export const register = (req, res) => {
-  res.json({ ok: true });
+  console.log(req.body);
+
+  res.json({ ok: 'Register' });
 };
 
 export const login = (req, res) => {
-  res.json({ ok: true });
+  res.json({ ok: 'Login' });
 };
