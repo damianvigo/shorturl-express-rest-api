@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.route.js';
 const app = express();
 app.use(express.json());
 
-app.use('/api/v1', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 /* app.get('/', (req, res) => {
   res.json({ ok: true });
