@@ -1,4 +1,5 @@
 import { User } from '../models/User.js';
+import jsonwebtoken from 'jsonwebtoken';
 
 export const register = async (req, res) => {
   // console.log(req.body);
@@ -16,7 +17,7 @@ export const register = async (req, res) => {
 
     await user.save();
 
-    //jwt token
+    // Generar el token JWT
 
     return res.status(201).json({ ok: true });
   } catch (error) {
@@ -31,7 +32,28 @@ export const register = async (req, res) => {
   // res.json({ ok: 'Register' });
 };
 
-export const login = (req, res) => {
+export const login = async (req, res) => {
   console.log(req.body);
-  res.json({ ok: 'Login' });
+
+  try {
+    const { email, password } = req.body;
+    let user = await User.findOne({ email: email });
+    //  if(!user) throw new Error('No existe el usuario registrado')
+    if (!user)
+      return res.status(403).json({ error: 'No existe el usuario registrado' });
+
+    const respuestaPassword = await user.comparePassword(password);
+    // console.log(respuestaPassword);
+    if (!respuestaPassword) {
+      return res.status(403).json({ error: 'Contraseña incorrecta' });
+    }
+
+    // Generar el token JWT
+    const token = jsonwebtoken.sign({ uid: user._id }, process.env.JWT_SECRET);
+
+    return res.json({ ok: 'Login', token });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'Error de servidor' });
+  }
 };

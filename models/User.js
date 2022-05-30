@@ -31,4 +31,8 @@ userSchema.pre('save', async function (next) {
   }
 });
 
+userSchema.methods.comparePassword = async function (frontendPassword) {
+  return await bcryptjs.compare(frontendPassword, this.password);
+};
+
 export const User = model('user', userSchema);
