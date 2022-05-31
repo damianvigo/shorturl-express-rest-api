@@ -52,6 +52,12 @@ export const login = async (req, res) => {
     // const token = jsonwebtoken.sign({ uid: user._id }, process.env.JWT_SECRET)
     const { token, expiresIn } = generateToken(user._id);
 
+    // Token en Cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: !(process.env.MODO === 'developer'),
+    });
+
     return res.json({ ok: 'Login', token, expiresIn });
   } catch (error) {
     console.log(error);

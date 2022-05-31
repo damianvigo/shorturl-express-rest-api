@@ -27,7 +27,7 @@ router.post(
   register
 );
 
-router.get(
+router.post(
   '/login',
   [
     body('email', 'Formato de email incorrecto')
