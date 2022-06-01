@@ -15,19 +15,43 @@
     <h1>Ruta protegida</h1>
     <div>
       <h2 id="app">Email:</h2>
+      <button id="logout">Cerrar sesion</button>
 
       <script>
+        const logout = document.getElementById('logout');
+        logout.addEventListener('click', async (e) => {
+          const res = await fetch('/api/v1/auth/logout', {
+            // headers: {
+            //  'Content-Type': 'application/json',
+            //  Authorization: `Bearer ${token}`,
+            // },
+            // incluyendo la cookie en cada solicitud http
+            // credentials: 'include',
+          });
+          console.log(res);
+        });
+
         document.addEventListener('DOMContentLoaded', async (e) => {
           try {
             /*    const token = localStorage.getItem('token');
           console.log(token); */
+
+            /* solicitud de malicioso bloqueado por cors, no obtendra el token de acceso */
+            const resToken = await fetch('/api/v1/auth/refresh', {
+              method: 'GET',
+              credentials: 'include',
+            });
+
+            const { token } = await resToken.json();
+
             const res = await fetch('/api/v1/auth/protected', {
               method: 'GET',
               headers: {
-                // Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
               },
-              credentials: 'include',
+              // incluyendo la cookie en cada solicitud http
+              // credentials: 'include',
             });
             console.log(res.ok, res.status);
             const data = await res.json();
