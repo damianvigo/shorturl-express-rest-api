@@ -1,4 +1,3 @@
-import jsonwebtoken from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { generateRefreshToken, generateToken } from '../utils/tokenManager.js';
 
@@ -78,34 +77,12 @@ export const infoUser = async (req, res) => {
 
 export const refreshToken = (req, res) => {
   try {
-    const refreshTokenCookie = req.cookies.refreshToken;
-    if (!refreshTokenCookie) throw new Error('No existe el token');
-
-    /*  const payload = jsonwebtoken.verify(token, process.env.JWT_SECRET);
-    console.log(payload); */
-
-    const { uid } = jsonwebtoken.verify(
-      refreshTokenCookie,
-      process.env.JWT_REFRESH
-    );
-    //console.log(uid);
-
-    const { token, expiresIn } = generateToken(uid);
+    const { token, expiresIn } = generateToken(req.uid);
 
     return res.json({ token, expiresIn });
   } catch (error) {
     console.log(error);
-    const TokenVerificationErrors = {
-      ['invalid signature']: 'La firma del JWT no es valida',
-      ['jwt expired']: 'JWT expirado',
-      ['invalid token']: 'Token no válido',
-      ['No Bearer']: 'Utiliza formato Bearer',
-      ['jwt malformed']: 'JWT formato no valido',
-    };
-
-    return res
-      .status(401)
-      .send({ error: TokenVerificationErrors[error.message] });
+    return res.status(500).json({ error: 'Error de server' });
   }
 };
 
