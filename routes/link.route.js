@@ -20,7 +20,8 @@ const router = Router();
 // DELETE  /api/v1/links/:id     remove link
 
 router.get('/', requireToken, getLinks);
-router.get('/:id', requireToken, getLink);
+// router.get('/:id', requireToken, getLink);
+router.get('/:nanoLink', getLink);
 router.post('/', requireToken, bodyLinkValidator, createLink);
 router.patch(
   '/:id',
